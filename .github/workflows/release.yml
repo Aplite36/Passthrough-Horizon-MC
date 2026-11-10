@@ -63,4 +63,13 @@ jobs:
           # A changelog section that opens with "Pre-release" is published as one.
           flag=""
           if grep -m1 -v '^$' notes.md | grep -q '^Pre-release'; then flag="--prerelease"; fi
-          gh release create "v$VERSION" dist/* --target "$GITHUB_SHA" --title "Click Through $VERSION" --notes-file notes.md $flag
+          # A run by hand names the branch as the tag's target: the workflow's token may not
+          # tag a bare commit. So the branch must still be at the commit this run tested.
+          if [ "$GITHUB_REF_TYPE" = branch ]; then
+            head=$(git ls-remote origin "refs/heads/$GITHUB_REF_NAME" | cut -f1)
+            [ "$head" = "$GITHUB_SHA" ] || { echo "$GITHUB_REF_NAME moved since this run started: run it again." >&2; exit 1; }
+            target="--target $GITHUB_REF_NAME"
+          else
+            target=""
+          fi
+          gh release create "v$VERSION" dist/* $target --title "Click Through $VERSION" --notes-file notes.md $flag
