@@ -1,0 +1,14 @@
+[package]
+name = "horizon-mod-passthrough"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+publish = false
+description = "Passthrough, a native mod for Horizon: right-click through wall signs, wall banners, item frames and paintings."
+
+# The mod's rules and their tests: the same file the bundle adds to the game.
+[lib]
+path = "mixins/passthrough/runtime.rs"
+
+[lints.clippy]
+all = "warn"
