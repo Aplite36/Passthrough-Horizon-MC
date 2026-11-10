@@ -36,7 +36,7 @@ jobs:
       - uses: actions/checkout@v6
       - run: rustup toolchain install $RUST --profile minimal && rustup default $RUST
       - run: sudo apt-get update && sudo apt-get install -y libasound2-dev libudev-dev pkg-config rsync
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         with:
           path: |
             .horizon-tools/native/target/cargo
