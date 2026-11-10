@@ -23,6 +23,6 @@ Run `cargo fmt --check`, `cargo clippy --all-targets -- -D warnings`, `cargo tes
 
 ## Version bumps
 
-The version is in four places: `Cargo.toml`, `horizon-mixin.toml`, `VERSION` in `runtime.rs`, and a new `CHANGELOG.md` section. `scripts/check-version.sh` checks they agree. A release is a `v<version>` tag on `main`. A changelog section that opens with "Pre-release" is published as a pre-release.
+The version is in four places: `Cargo.toml`, `horizon-mixin.toml`, `VERSION` in `runtime.rs`, and a new `CHANGELOG.md` section. `scripts/check-version.sh` checks they agree. To release, run the `release` workflow on `main` (it tags `v<version>` itself), or push a `v<version>` tag. A changelog section that opens with "Pre-release" is published as a pre-release.
 
 When Horizon changes a hook: fix the mod, set `horizon_revision` in both `compatibility.json` and `horizon-mixin.toml` to the commit it now builds on, and bump the patch version.
