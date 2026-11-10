@@ -2,13 +2,13 @@
 // decoration whose block behind answers a click, the click goes to that block
 // instead: the server is sent the same packet a click on the block sends, so
 // it opens the chest through its own path. Anything else is left to the game.
-fn passthrough_use_key(
+fn click_through_use_key(
     game: &mut crate::game::Game<'_>,
     button: i32,
     hand: horizon_client::first_person::Hand,
     canceled: &mut bool,
 ) {
-    use crate::game::passthrough as m;
+    use crate::game::click_through as m;
     if button != 1
         || *canceled
         || !matches!(hand, horizon_client::first_person::Hand::Main)

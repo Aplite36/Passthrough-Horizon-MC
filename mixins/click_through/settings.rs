@@ -1,6 +1,6 @@
 // The mod's settings page: one button for each decoration.
-fn passthrough_page(game: &crate::game::Game<'_>, mod_id: &str, buttons: &mut Vec<String>) {
-    use crate::game::passthrough as m;
+fn click_through_page(game: &crate::game::Game<'_>, mod_id: &str, buttons: &mut Vec<String>) {
+    use crate::game::click_through as m;
     if mod_id != m::ID {
         return;
     }

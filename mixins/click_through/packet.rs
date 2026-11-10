@@ -1,11 +1,11 @@
 // The server's play packets, read only: the item frames and paintings it adds
 // and removes, so a click can tell when the crosshair is on one. Every packet
 // comes through here, so the match is first and the rest only runs for these four.
-fn passthrough_packet(
+fn click_through_packet(
     game: &crate::game::Game<'_>,
     packet: &horizon_client::mod_api::ClientboundPlayPacket,
 ) {
-    use crate::game::passthrough as m;
+    use crate::game::click_through as m;
     use horizon_client::mod_api::ClientboundPlayPacket as P;
     match packet {
         P::AddEntity(e) => {

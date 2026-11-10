@@ -1,6 +1,6 @@
 // A click on the mod's settings page: turn that decoration on or off, and keep it.
-fn passthrough_click(game: &crate::game::Game<'_>, mod_id: &str, button: usize) {
-    use crate::game::passthrough as m;
+fn click_through_click(game: &crate::game::Game<'_>, mod_id: &str, button: usize) {
+    use crate::game::click_through as m;
     if mod_id != m::ID {
         return;
     }

@@ -1,6 +1,6 @@
 // The mod's row in Options > Mods.
-fn passthrough_listed(mods: &mut Vec<crate::game::native_hooks::NativeMod>) {
-    use crate::game::passthrough as m;
+fn click_through_listed(mods: &mut Vec<crate::game::native_hooks::NativeMod>) {
+    use crate::game::click_through as m;
     mods.push(crate::game::native_hooks::NativeMod {
         id: m::ID.into(),
         title: format!("{} {}", m::NAME, m::VERSION),

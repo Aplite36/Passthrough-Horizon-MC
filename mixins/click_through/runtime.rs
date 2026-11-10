@@ -1,4 +1,4 @@
-// Passthrough: a right-click on a wall sign, wall banner, item frame or
+// Click Through: a right-click on a wall sign, wall banner, item frame or
 // painting goes to the block it hangs on. This file holds the rules, the
 // geometry and the mod's state. It is both the Cargo library the tests run
 // against and the module the bundle adds to the game, so nothing here names a
@@ -8,8 +8,8 @@ use std::sync::Mutex;
 use std::sync::atomic::{AtomicBool, AtomicU8, Ordering};
 
 /// The mod's id (its settings folder), name and version.
-pub const ID: &str = "passthrough";
-pub const NAME: &str = "Passthrough";
+pub const ID: &str = "click_through";
+pub const NAME: &str = "Click Through";
 pub const VERSION: &str = "0.1.0";
 pub const DESCRIPTION: &str = "Right-click through wall signs, wall banners, item frames and paintings to use the block behind them. Sneak to click the decoration itself.";
 

@@ -1,4 +1,4 @@
-# Passthrough
+# Click Through
 
 A native mod for [Horizon](https://playhorizon.dev), the Rust client for Minecraft: Java Edition 26.3.
 
@@ -11,7 +11,7 @@ Right-click a wall sign, wall banner, item frame or painting, and the click goes
 - When a click passes through, the decoration doesn't react. The sign editor stays shut and a framed item doesn't rotate.
 - Holding dye, an ink sac, a glow ink sac or honeycomb, a click on a sign still reaches the sign, so you can colour and wax it.
 - Standing signs, standing banners and hanging signs are left alone.
-- Each of the four decorations has its own switch in Options > Mods > Passthrough > Settings. All four start on.
+- Each of the four decorations has its own switch in Options > Mods > Click Through > Settings. All four start on.
 
 ## Where it works
 
@@ -56,14 +56,14 @@ python3 horizon-mods/native/tools/native.py package /path/to/Passthrough-Horizon
 Releases are signed with [minisign](https://jedisct1.github.io/minisign/). The public key is in `horizon-mods.pub`:
 
 ```bash
-minisign -V -p horizon-mods.pub -m passthrough-0.1.0.hnmod
+minisign -V -p horizon-mods.pub -m click_through-0.1.0.hnmod
 ```
 
 ## How it is built
 
-- `mixins/passthrough/runtime.rs` holds the rules, the geometry and the mod's state, with its tests. It names no type of the game, so `cargo test` runs it alone.
+- `mixins/click_through/runtime.rs` holds the rules, the geometry and the mod's state, with its tests. It names no type of the game, so `cargo test` runs it alone.
 - The other `.rs` files next to it are the hooks. Each is one short function.
-- `mixins/passthrough/horizon-mixin.toml` names the hook points: `interaction_key` (the use key), `client_packet` (which frames and paintings exist), `movement_input` (the sneak key), and the three for the Mods list and settings page.
+- `mixins/click_through/horizon-mixin.toml` names the hook points: `interaction_key` (the use key), `client_packet` (which frames and paintings exist), `movement_input` (the sneak key), and the three for the Mods list and settings page.
 
 ### Cost
 

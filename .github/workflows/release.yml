@@ -1,4 +1,5 @@
 # A v<version> tag: test, package the .hnmod, sign it and publish a release.
+# Start the version's CHANGELOG.md section with "Pre-release" to publish it as a pre-release.
 name: release
 on:
   push:
@@ -22,7 +23,7 @@ jobs:
         run: |
           scripts/horizon-check.sh package
           mkdir dist
-          cp .horizon-tools/native/target/passthrough-${{ steps.version.outputs.version }}.hnmod dist/
+          cp .horizon-tools/native/target/click_through-${{ steps.version.outputs.version }}.hnmod dist/
           (cd dist && sha256sum *.hnmod | tee SHA256SUMS)
       - name: Sign
         env:
@@ -44,4 +45,7 @@ jobs:
           VERSION: ${{ steps.version.outputs.version }}
         run: |
           awk -v v="## $VERSION" '$0==v{on=1;next} /^## /{on=0} on' CHANGELOG.md > notes.md
-          gh release create "$GITHUB_REF_NAME" dist/* --title "Passthrough $VERSION" --notes-file notes.md
+          # A changelog section that opens with "Pre-release" is published as one.
+          flag=""
+          if grep -m1 -v '^$' notes.md | grep -q '^Pre-release'; then flag="--prerelease"; fi
+          gh release create "$GITHUB_REF_NAME" dist/* --title "Click Through $VERSION" --notes-file notes.md $flag

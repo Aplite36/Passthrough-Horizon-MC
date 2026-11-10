@@ -1,5 +1,5 @@
 [mod]
-id = "passthrough"
+id = "click_through"
 version = "0.1.0"
 priority = 100
 
@@ -11,7 +11,7 @@ horizon_revision = "1453e0e614af4b2d04dd0d228a94162b5d459910"
 [[module]]
 id = "runtime"
 file = "crates/horizon-client/src/game.rs"
-name = "passthrough"
+name = "click_through"
 source = "runtime.rs"
 
 # The use key, before the game acts on the crosshair: the click this mod redirects.
