@@ -12,7 +12,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - run: rustup toolchain install $RUST --profile minimal && rustup default $RUST
       - name: The tag matches the mod's version
         id: version

@@ -17,7 +17,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - run: rustup toolchain install $RUST --profile minimal --component rustfmt --component clippy && rustup default $RUST
       - run: scripts/check-version.sh
       - run: cargo fmt --check
@@ -33,7 +33,7 @@ jobs:
   horizon:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - run: rustup toolchain install $RUST --profile minimal && rustup default $RUST
       - run: sudo apt-get update && sudo apt-get install -y libasound2-dev libudev-dev pkg-config rsync
       - uses: actions/cache@v4
