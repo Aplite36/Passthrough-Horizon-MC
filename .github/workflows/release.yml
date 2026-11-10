@@ -1,7 +1,10 @@
-# A v<version> tag: test, package the .hnmod, sign it and publish a release.
+# Run by hand on main (Actions > release > Run workflow), or by a v<version> tag:
+# test, package the .hnmod, sign it and publish a release. A run by hand tags
+# the commit v<version> itself, from the version in the mod's files.
 # Start the version's CHANGELOG.md section with "Pre-release" to publish it as a pre-release.
 name: release
 on:
+  workflow_dispatch:
   push:
     tags: ["v*"]
 permissions:
@@ -16,7 +19,19 @@ jobs:
       - run: rustup toolchain install $RUST --profile minimal && rustup default $RUST
       - name: The tag matches the mod's version
         id: version
-        run: echo "version=$(scripts/check-version.sh "$GITHUB_REF_NAME")" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "$GITHUB_REF_TYPE" = tag ]; then
+            version=$(scripts/check-version.sh "$GITHUB_REF_NAME")
+          else
+            [ "$GITHUB_REF_NAME" = main ] || { echo "Releases are cut from main." >&2; exit 1; }
+            version=$(scripts/check-version.sh)
+            if gh release view "v$version" >/dev/null 2>&1; then
+              echo "v$version is already released: bump the version first." >&2; exit 1
+            fi
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
       - run: cargo test --locked
       - name: Package
         id: package
@@ -48,4 +63,4 @@ jobs:
           # A changelog section that opens with "Pre-release" is published as one.
           flag=""
           if grep -m1 -v '^$' notes.md | grep -q '^Pre-release'; then flag="--prerelease"; fi
-          gh release create "$GITHUB_REF_NAME" dist/* --title "Click Through $VERSION" --notes-file notes.md $flag
+          gh release create "v$VERSION" dist/* --target "$GITHUB_SHA" --title "Click Through $VERSION" --notes-file notes.md $flag
