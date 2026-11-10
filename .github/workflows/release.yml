@@ -1,0 +1,51 @@
+# A v<version> tag: test, package the .hnmod, sign it and publish a release.
+# Start the version's CHANGELOG.md section with "Pre-release" to publish it as a pre-release.
+name: release
+on:
+  push:
+    tags: ["v*"]
+permissions:
+  contents: write
+env:
+  RUST: "1.99.1"
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: rustup toolchain install $RUST --profile minimal && rustup default $RUST
+      - name: The tag matches the mod's version
+        id: version
+        run: echo "version=$(scripts/check-version.sh "$GITHUB_REF_NAME")" >> "$GITHUB_OUTPUT"
+      - run: cargo test --locked
+      - name: Package
+        id: package
+        run: |
+          scripts/horizon-check.sh package
+          mkdir dist
+          cp .horizon-tools/native/target/click_through-${{ steps.version.outputs.version }}.hnmod dist/
+          (cd dist && sha256sum *.hnmod | tee SHA256SUMS)
+      - name: Sign
+        env:
+          MINISIGN_KEY: ${{ secrets.MINISIGN_KEY }}
+        run: |
+          if [ -z "$MINISIGN_KEY" ]; then
+            echo "::warning::No MINISIGN_KEY secret: this release is not signed."
+            exit 0
+          fi
+          sudo apt-get update && sudo apt-get install -y minisign
+          key=$(mktemp)
+          trap 'rm -f "$key"' EXIT
+          printf '%s\n' "$MINISIGN_KEY" > "$key"
+          minisign -S -s "$key" -m dist/*.hnmod
+          minisign -V -p horizon-mods.pub -m dist/*.hnmod
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          awk -v v="## $VERSION" '$0==v{on=1;next} /^## /{on=0} on' CHANGELOG.md > notes.md
+          # A changelog section that opens with "Pre-release" is published as one.
+          flag=""
+          if grep -m1 -v '^$' notes.md | grep -q '^Pre-release'; then flag="--prerelease"; fi
+          gh release create "$GITHUB_REF_NAME" dist/* --title "Click Through $VERSION" --notes-file notes.md $flag

@@ -1,0 +1,27 @@
+# Every Monday: the mod on Horizon's newest Nightly, to catch a changed hook
+# point before players do.
+name: nightly
+on:
+  schedule:
+    - cron: "23 4 * * 1"
+  workflow_dispatch:
+    inputs:
+      horizon:
+        description: "Horizon commit, tag, or `latest` (the newest Nightly)"
+        default: latest
+permissions:
+  contents: read
+env:
+  RUST: "1.99.1"
+jobs:
+  horizon:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: rustup toolchain install $RUST --profile minimal && rustup default $RUST
+      - run: sudo apt-get update && sudo apt-get install -y libasound2-dev libudev-dev pkg-config rsync
+      - name: Apply on the newest Horizon and check the game
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          HORIZON: ${{ inputs.horizon || 'latest' }}
+        run: scripts/horizon-check.sh check "$HORIZON"

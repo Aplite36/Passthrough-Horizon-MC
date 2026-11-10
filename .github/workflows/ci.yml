@@ -1,0 +1,50 @@
+# Every push and pull request: the mod's own tests, then the mod applied to
+# Horizon's source and the whole game compile-checked, as the launcher builds it.
+name: ci
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+env:
+  # The Rust the launcher builds native mods with.
+  RUST: "1.99.1"
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: rustup toolchain install $RUST --profile minimal --component rustfmt --component clippy && rustup default $RUST
+      - run: scripts/check-version.sh
+      - run: cargo fmt --check
+      - run: cargo clippy --all-targets --locked -- -D warnings
+      - run: cargo test --locked
+      - name: Package the .hnmod
+        run: scripts/horizon-check.sh package
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hnmod
+          path: .horizon-tools/native/target/*.hnmod
+          if-no-files-found: error
+  horizon:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: rustup toolchain install $RUST --profile minimal && rustup default $RUST
+      - run: sudo apt-get update && sudo apt-get install -y libasound2-dev libudev-dev pkg-config rsync
+      - uses: actions/cache@v4
+        with:
+          path: |
+            .horizon-tools/native/target/cargo
+            .horizon-tools/native/target/horizon-mixins
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: horizon-${{ env.RUST }}-${{ hashFiles('compatibility.json') }}
+      - name: Apply on Horizon and check the game
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: scripts/horizon-check.sh check

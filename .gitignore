@@ -1,0 +1,6 @@
+target/
+native/
+*.hnmod
+*.minisig
+*.key
+.horizon-tools/

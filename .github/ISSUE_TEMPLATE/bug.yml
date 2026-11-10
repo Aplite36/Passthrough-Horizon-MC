@@ -1,0 +1,40 @@
+name: Bug report
+description: A click went to the wrong place, or the mod doesn't build.
+labels: [bug]
+body:
+  - type: input
+    id: mod
+    attributes:
+      label: Mod version
+      placeholder: "0.1.0"
+    validations:
+      required: true
+  - type: input
+    id: horizon
+    attributes:
+      label: Horizon version
+      description: The launcher shows it.
+    validations:
+      required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where
+      options:
+        - Single player
+        - A Horizon server
+        - A vanilla or plugin server
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: Which decoration, which block behind it, what you were holding, what you expected and what you got.
+    validations:
+      required: true
+  - type: textarea
+    id: log
+    attributes:
+      label: Build or game log
+      render: text
