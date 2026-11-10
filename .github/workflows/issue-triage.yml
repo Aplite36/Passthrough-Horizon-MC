@@ -31,8 +31,7 @@ jobs:
 
             1. Read the issue with `gh issue view`. Read README.md and CLAUDE.md for what the mod does.
             2. Run `gh label list` and apply at most two fitting labels with `gh issue edit --add-label`.
-               Use `bug`, `enhancement`, `question`, `horizon-update` (a Horizon change broke the build)
-               or `needs-info`.
+               Use only labels that list shows.
             3. Post one short comment with `gh issue comment`. For a bug, say whether the README's
                "Limits" section already covers it, and ask for anything missing from: Horizon version,
                mod version, single player or server, the decoration and the block behind it, what was
